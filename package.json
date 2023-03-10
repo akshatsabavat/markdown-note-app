@@ -4,6 +4,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "framer-motion": "^10.2.3",
+    "react-hook-form": "^7.43.5",
     "react-router-dom": "^6.8.2"
   }
 }
