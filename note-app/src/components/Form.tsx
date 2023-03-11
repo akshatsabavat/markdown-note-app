@@ -11,12 +11,17 @@ import {
 import { useRef, useState } from "react";
 import { NoteData, Tag } from "../App";
 import CreatableSelect from "react-select/creatable";
+import { v4 as uuidv4 } from "uuid";
 
 type FormComponentProps = {
   onSubmit: (data: NoteData) => void;
+  onAddTag: (data: Tag) => void;
 };
 
-const FormComponent: React.FC<FormComponentProps> = ({ onSubmit }) => {
+const FormComponent: React.FC<FormComponentProps> = ({
+  onSubmit,
+  onAddTag,
+}) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const markdownRef = useRef<HTMLTextAreaElement>(null);
   const [Tags, setTags] = useState<Tag[]>([]);
@@ -50,6 +55,11 @@ const FormComponent: React.FC<FormComponentProps> = ({ onSubmit }) => {
           <FormLabel>Tags</FormLabel>
           <CreatableSelect
             isMulti
+            onCreateOption={(label) => {
+              const newTag = { id: uuidv4(), label };
+              onAddTag(newTag);
+              setTags((prev) => [...prev, newTag]);
+            }}
             value={Tags.map((tag) => {
               return { label: tag.label, value: tag.id };
             })}
