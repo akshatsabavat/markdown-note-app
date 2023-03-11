@@ -5,26 +5,29 @@ import {
   FormLabel,
   Textarea,
   Input,
-  Select,
   Button,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { NoteData, Tag } from "../App";
 import CreatableSelect from "react-select/creatable";
 import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
 type FormComponentProps = {
   onSubmit: (data: NoteData) => void;
   onAddTag: (data: Tag) => void;
+  availableTags: Tag[];
 };
 
 const FormComponent: React.FC<FormComponentProps> = ({
   onSubmit,
   onAddTag,
+  availableTags,
 }) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const markdownRef = useRef<HTMLTextAreaElement>(null);
   const [Tags, setTags] = useState<Tag[]>([]);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState<NoteData>({
     title: "",
@@ -39,8 +42,8 @@ const FormComponent: React.FC<FormComponentProps> = ({
       markdown: markdownRef.current!.value,
       tags: [],
     });
-    // onSubmit(formData);
-    console.log(formData);
+    onSubmit(formData);
+    navigate("..");
   };
 
   return (
@@ -63,6 +66,12 @@ const FormComponent: React.FC<FormComponentProps> = ({
             value={Tags.map((tag) => {
               return { label: tag.label, value: tag.id };
             })}
+            options={availableTags.map((tag) => {
+              return {
+                label: tag.label,
+                value: tag.id,
+              };
+            })}
             onChange={(tagArray) => {
               setTags(
                 tagArray.map((tag) => {
@@ -75,7 +84,12 @@ const FormComponent: React.FC<FormComponentProps> = ({
       </Flex>
       <FormControl id="textarea">
         <FormLabel>Body</FormLabel>
-        <Textarea isRequired ref={markdownRef} height="400px" />
+        <Textarea
+          isRequired
+          ref={markdownRef}
+          marginBottom="2rem"
+          height="250px"
+        />
       </FormControl>
       <Button type="submit">Submit</Button>
     </form>

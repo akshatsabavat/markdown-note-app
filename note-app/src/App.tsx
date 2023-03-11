@@ -1,9 +1,10 @@
 import { Container, Tag } from "@chakra-ui/react";
 import NewNote from "./pages/NewNote";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import useLocalStorage from "./hooks/useLocalStorage";
 import { useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
+import NoteList from "./pages/NoteList";
 
 export type Note = {
   id: string;
@@ -32,7 +33,7 @@ export type Tag = {
 
 const App = () => {
   const [notes, setNotes] = useLocalStorage<RawNote[]>("Notes", []);
-  const [tags, setTags] = useLocalStorage<RawNote[]>("Tags", []);
+  const [tags, setTags] = useLocalStorage<Tag[]>("Tags", []);
 
   const notesAndTags = useMemo(() => {
     return notes.map((note) => {
@@ -44,7 +45,7 @@ const App = () => {
   }, [notes, tags]);
 
   const onCreateNote = ({ tags, ...data }: NoteData) => {
-    setNotes((prevNote: RawNote[]) => {
+    setNotes((prevNote: Tag[]) => {
       return [
         ...prevNote,
         { ...data, id: uuidv4(), tagIds: tags.map((tag) => tag.id) },
@@ -59,10 +60,25 @@ const App = () => {
   return (
     <Container maxWidth="1000px" marginY="3rem">
       <Routes>
-        <Route path="/" element={<h1>HomePage</h1>} />
+        <Route
+          path="/"
+          element={
+            <NoteList
+              notes={notesAndTags}
+              availableTags={tags}
+              onAddTag={onAddTag}
+            />
+          }
+        />
         <Route
           path="/new"
-          element={<NewNote onAddTag={onAddTag} onSubmit={onCreateNote} />}
+          element={
+            <NewNote
+              availableTags={tags}
+              onAddTag={onAddTag}
+              onSubmit={onCreateNote}
+            />
+          }
         />
         <Route path="/:id">
           <Route index element={<h1>Show</h1>} />
