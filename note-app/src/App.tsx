@@ -6,6 +6,16 @@ export type Note = {
   id: string;
 } & NoteData;
 
+export type RawNote = {
+  id: string;
+};
+
+export type RawNoteDate = {
+  title: string;
+  markdown: string;
+  tagIds: string[];
+};
+
 export type NoteData = {
   title: string;
   markdown: string;
@@ -18,6 +28,9 @@ export type Tag = {
 };
 
 const App = () => {
+  const [notes, setNotes] = useLocalStorage<RawNote[]>("Notes", []);
+  const [tags, setTags] = useLocalStorage<RawNote[]>("Tags", []);
+
   return (
     <Container maxWidth="1000px" marginY="3rem">
       <Routes>
