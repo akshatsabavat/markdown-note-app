@@ -1,13 +1,18 @@
 import { Heading } from "@chakra-ui/react";
+import { NoteData } from "../App";
 import FormComponent from "../components/Form";
 
-const NewNote = () => {
+type NewNoteProps = {
+  onSubmit: (data: NoteData) => void;
+};
+
+const NewNote: React.FC<NewNoteProps> = ({ onSubmit }) => {
   return (
     <>
       <Heading as="h1" marginBottom="2rem">
         New Note
       </Heading>
-      <FormComponent />
+      <FormComponent onSubmit={onSubmit} />
     </>
   );
 };
