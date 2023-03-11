@@ -6,29 +6,68 @@ import {
   Textarea,
   Input,
   Select,
+  Button,
 } from "@chakra-ui/react";
-const FormComponent = () => {
+import { useRef, useState } from "react";
+import { NoteData, Tag } from "../App";
+import CreatableSelect from "react-select/creatable";
+
+type FormComponentProps = {
+  onSubmit: (data: NoteData) => void;
+};
+
+const FormComponent: React.FC<FormComponentProps> = ({ onSubmit }) => {
+  const titleRef = useRef<HTMLInputElement>(null);
+  const markdownRef = useRef<HTMLTextAreaElement>(null);
+  const [Tags, setTags] = useState<Tag[]>([]);
+
+  const [formData, setFormData] = useState<NoteData>({
+    title: "",
+    markdown: "",
+    tags: [],
+  });
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setFormData({
+      title: titleRef.current!.value,
+      markdown: markdownRef.current!.value,
+      tags: [],
+    });
+    // onSubmit(formData);
+    console.log(formData);
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <Flex marginBottom="2rem" justify="space-between" gap="60px">
-        <FormControl>
+        <FormControl isRequired id="input1">
           <FormLabel>Title</FormLabel>
-          <Input type="text" name="title" />
+          <Input ref={titleRef} type="text" name="title" />
           <FormHelperText>Fill in the title of your note above</FormHelperText>
         </FormControl>
-        <FormControl>
+        <FormControl id="input2">
           <FormLabel>Tags</FormLabel>
-          <Select>
-            <option>Car</option>
-            <option>Bus</option>
-            <option>Train</option>
-          </Select>
+          <CreatableSelect
+            isMulti
+            value={Tags.map((tag) => {
+              return { label: tag.label, value: tag.id };
+            })}
+            onChange={(tagArray) => {
+              setTags(
+                tagArray.map((tag) => {
+                  return { label: tag.label, id: tag.value };
+                })
+              );
+            }}
+          />
         </FormControl>
       </Flex>
-      <FormControl>
+      <FormControl id="textarea">
         <FormLabel>Body</FormLabel>
-        <Textarea height="400px" />
+        <Textarea isRequired ref={markdownRef} height="400px" />
       </FormControl>
+      <Button type="submit">Submit</Button>
     </form>
   );
 };
