@@ -14,9 +14,9 @@ import {
 import { AddIcon, EditIcon } from "@chakra-ui/icons";
 import { useRef, useState, useMemo } from "react";
 import { Note, Tag } from "../App";
-import useLocalStorage from "../hooks/useLocalStorage";
-import CreatableSelect from "react-select/creatable";
 import { v4 as uuidv4 } from "uuid";
+import CreatableSelect from "react-select/creatable";
+import NoteCard from "../components/NoteCard";
 
 type NoteListProps = {
   availableTags: Tag[];
@@ -102,7 +102,7 @@ const NoteList: React.FC<NoteListProps> = ({
       </form>
       <Grid templateColumns="repeat(3,1fr)">
         {filteredNotes.map((note) => {
-          return <h1 key={note.id}>hi</h1>;
+          return <NoteCard id={note.id} title={note.title} tags={note.tags} />;
         })}
       </Grid>
     </>
